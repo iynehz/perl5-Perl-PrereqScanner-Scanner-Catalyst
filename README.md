@@ -2,11 +2,11 @@
 
 # NAME
 
-Perl::PrereqScanner::Scanner::Catalyst - Plugin for Perl::PrereqScanner looking for Catalyst plugins
+Perl::PrereqScanner::Scanner::Catalyst - Plugin for Perl::PrereqScanner looking for Catalyst plugin/action modules
 
 # VERSION
 
-version 0.001
+version 0.002
 
 # SYNOPSIS
 
@@ -19,7 +19,7 @@ version 0.001
 # DESCRIPTION
 
 This module is a scanner plugin for Perl::PrereqScanner. It looks for
-Catalyst plugins in the code.
+use of Catalyst plugin and action modules in the code.
 
 # SEE ALSO
 

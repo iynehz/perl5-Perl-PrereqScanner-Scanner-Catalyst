@@ -1,6 +1,6 @@
 package Perl::PrereqScanner::Scanner::Catalyst;
 
-# ABSTRACT: Plugin for Perl::PrereqScanner looking for Catalyst plugins
+# ABSTRACT: Plugin for Perl::PrereqScanner looking for Catalyst plugin/action modules
 
 use strict;
 use warnings;
@@ -146,6 +146,34 @@ sub scan_for_prereqs {
             }
         }
     }
+
+    # for ActionClass attributes
+    my $subs = $ppi_doc->find('PPI::Statement::Sub') || [];
+    for my $sub_node (@$subs) {
+        my @attributes =
+          grep { $_->isa('PPI::Token::Attribute') } $sub_node->schildren();
+
+        for my $attr_node (@attributes) {
+            my $attr_content = $attr_node->content;
+            $attr_content =~ s/\s+//g;
+            if ( $attr_content =~ /ActionClass\(([^\)]+)\)/ ) {
+                my $ppi_action_class = PPI::Document->new( \$1 );
+                my $quotes           = $ppi_action_class->find(
+                    sub {
+                        my ( $doc, $node ) = @_;
+                        $node->isa('PPI::Token::QuoteLike::Words')
+                          || $node->isa('PPI::Token::Quote');
+                    }
+                );
+                my @action_class_names =
+                  map { $self->_q_contents($_) } @$quotes;
+                for (@action_class_names) {
+                    my $module = "Catalyst::Action::$_";
+                    $req->add_minimum( $module => 0 );
+                }
+            }
+        }
+    }
 }
 
 1;
@@ -163,7 +191,7 @@ __END__
 =head1 DESCRIPTION
 
 This module is a scanner plugin for Perl::PrereqScanner. It looks for
-Catalyst plugins in the code.
+use of Catalyst plugin and action modules in the code.
 
 =head1 SEE ALSO
 
