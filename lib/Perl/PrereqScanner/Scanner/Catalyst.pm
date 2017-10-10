@@ -5,6 +5,8 @@ package Perl::PrereqScanner::Scanner::Catalyst;
 use strict;
 use warnings;
 
+# VERSION
+
 use Moose;
 with 'Perl::PrereqScanner::Scanner';
 
